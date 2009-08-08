@@ -1,4 +1,4 @@
-module CouchDesignDocs
+module CouchDocs
   class DocumentDirectory
 
     attr_accessor :couch_doc_dir

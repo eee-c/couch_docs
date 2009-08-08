@@ -1,4 +1,4 @@
-module CouchDesignDocs
+module CouchDocs
 
   # :stopdoc:
   VERSION = '1.2.0'
@@ -87,8 +87,8 @@ module CouchDesignDocs
     Dir.glob(search_me).sort.each {|rb| require rb}
   end
 
-end  # module CouchDesignDocs
+end  # module CouchDocs
 
-CouchDesignDocs.require_all_libs_relative_to(__FILE__)
+CouchDocs.require_all_libs_relative_to(__FILE__)
 
 # EOF

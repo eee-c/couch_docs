@@ -1,8 +1,8 @@
 
 require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib couch_design_docs]))
+    File.join(File.dirname(__FILE__), %w[.. lib couch_docs]))
 
-include CouchDesignDocs
+include CouchDocs
 
 Spec::Runner.configure do |config|
   # == Mock Framework

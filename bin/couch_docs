@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib couch_design_docs]))
+    File.join(File.dirname(__FILE__), %w[.. lib couch_docs]))
 
 # Put your code here
 
-CouchDesignDocs::CommandLine.run ARGV
+CouchDocs::CommandLine.run ARGV
 
 # EOF

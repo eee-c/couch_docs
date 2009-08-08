@@ -6,7 +6,7 @@ class Hash
   end
 end
 
-module CouchDesignDocs
+module CouchDocs
   class DesignDirectory
 
     attr_accessor :couch_view_dir

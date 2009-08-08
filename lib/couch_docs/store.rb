@@ -2,7 +2,7 @@ require 'rubygems'
 require 'restclient'
 require 'json'
 
-module CouchDesignDocs
+module CouchDocs
   class Store
     include Enumerable
 

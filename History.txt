@@ -2,13 +2,13 @@
 
 * Add the ability to upload "normal" documents in addition to design
   documents.
-  * <tt>CouchDesignDocs::upload_dir</tt> is aliased as
-    <tt>CouchDesignDocs::put_dir</tt> and is DEPRECATED.
-  * <tt>CouchDesignDocs::put_dir</tt> now puts both design documents
+  * <tt>CouchDocs::upload_dir</tt> is aliased as
+    <tt>CouchDocs::put_dir</tt> and is DEPRECATED.
+  * <tt>CouchDocs::put_dir</tt> now puts both design documents
     and "normal" documents onto the CouchDB database.
-  * <tt>CouchDesignDocs::put_design_dir</tt> has been added to put
+  * <tt>CouchDocs::put_design_dir</tt> has been added to put
     design documents
-  * <tt>CouchDesignDocs::put_document_dir</tt> has been added to put
+  * <tt>CouchDocs::put_document_dir</tt> has been added to put
     "normal" documents
 
 

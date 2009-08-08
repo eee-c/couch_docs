@@ -14,16 +14,16 @@ rescue LoadError
 end
 
 ensure_in_path 'lib'
-require 'couch_design_docs'
+require 'couch_docs'
 
 task :default => 'spec:run'
 
-PROJ.name = 'couch_design_docs'
+PROJ.name = 'couch_docs'
 PROJ.authors = 'Chris Strom'
 PROJ.email = 'chris@eeecooks.com'
-PROJ.url = 'http://github.com/eee-c/couch_design_docs'
-PROJ.version = CouchDesignDocs::VERSION
-PROJ.rubyforge.name = 'couch_design_docs'
+PROJ.url = 'http://github.com/eee-c/couch_docs'
+PROJ.version = CouchDocs::VERSION
+PROJ.rubyforge.name = 'couch_docs'
 
 PROJ.spec.opts << '--color'
 

@@ -1,16 +1,16 @@
 require File.join(File.dirname(__FILE__), %w[spec_helper])
 
-describe CouchDesignDocs do
+describe CouchDocs do
   it "should be able to load design and normal documents" do
-    CouchDesignDocs.
+    CouchDocs.
       should_receive(:put_design_dir).
       with("uri", "fixtures/_design")
 
-    CouchDesignDocs.
+    CouchDocs.
       should_receive(:put_document_dir).
       with("uri", "fixtures")
 
-    CouchDesignDocs.put_dir("uri", "fixtures")
+    CouchDocs.put_dir("uri", "fixtures")
   end
 
   it "should be able to load directory/JS files into CouchDB as design docs" do
@@ -25,7 +25,7 @@ describe CouchDesignDocs do
       should_receive(:put_design_documents).
       with({ "foo" => "bar" })
 
-    CouchDesignDocs.put_design_dir("uri", "fixtures")
+    CouchDocs.put_design_dir("uri", "fixtures")
   end
 
   it "should be able to load documents into CouchDB" do
@@ -43,7 +43,7 @@ describe CouchDesignDocs do
       should_receive(:put!).
       with('uri/foo', {"foo" => "1"})
 
-    CouchDesignDocs.put_document_dir("uri", "fixtures")
+    CouchDocs.put_document_dir("uri", "fixtures")
   end
 
   context "dumping CouchDB documents to a directory" do
@@ -60,14 +60,14 @@ describe CouchDesignDocs do
         should_receive(:store_document).
         with({'_id' => 'foo'})
 
-      CouchDesignDocs.dump("uri", "fixtures")
+      CouchDocs.dump("uri", "fixtures")
     end
     it "should be able to store all CouchDB documents on the filesystem" do
       @store.stub!(:map).and_return([{'_id' => '_design/foo'}])
       @dir.
         should_not_receive(:store_document)
 
-      CouchDesignDocs.dump("uri", "fixtures")
+      CouchDocs.dump("uri", "fixtures")
     end
   end
 end

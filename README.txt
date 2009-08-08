@@ -1,6 +1,6 @@
-couch_design_docs
+couch_docs
     by Chris Strom
-    http://github.com/eee-c/couch_design_docs
+    http://github.com/eee-c/couch_docs
 
 == DESCRIPTION:
 
@@ -21,7 +21,7 @@ Manage CouchDB views and documents.
   # /repos/db/couchdb/_design/lucene/transform.js
   # /repos/db/couchdb/foo.json
 
-  CouchDesignDocs.put_dir(DB_URL, DIRECTORY)
+  CouchDocs.put_dir(DB_URL, DIRECTORY)
 
   # => lucene design document with a "transform" function containing
   #    the contents of transform.js
@@ -37,7 +37,7 @@ Manage CouchDB views and documents.
 
 == INSTALL:
 
-* sudo gem install couch_design_docs
+* sudo gem install couch_docs
 
 == LICENSE:
 
