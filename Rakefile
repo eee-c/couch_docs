@@ -29,6 +29,8 @@ PROJ.spec.opts << '--color'
 
 PROJ.gem.dependencies = %w{json rest-client}
 
+PROJ.readme_file = 'README.rdoc'
+
 depend_on 'rest-client'
 depend_on 'json'
 

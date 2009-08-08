@@ -11,11 +11,11 @@ Gem::Specification.new do |s|
   s.description = %q{Manage CouchDB views and documents.}
   s.email = %q{chris@eeecooks.com}
   s.executables = ["couch_docs"]
-  s.extra_rdoc_files = ["History.txt", "README.txt", "bin/couch_docs"]
-  s.files = ["History.txt", "README.txt", "Rakefile", "bin/couch_docs", "couch_docs.gemspec", "fixtures/_design/a/b/c.js", "fixtures/_design/a/b/d.js", "fixtures/bar.json", "fixtures/foo.json", "lib/couch_docs.rb", "lib/couch_docs/design_directory.rb", "lib/couch_docs/document_directory.rb", "lib/couch_docs/store.rb", "spec/couch_docs_spec.rb", "spec/spec_helper.rb", "test/test_couch_docs.rb"]
+  s.extra_rdoc_files = ["History.txt", "README.rdoc", "bin/couch_docs"]
+  s.files = ["History.txt", "README.rdoc", "Rakefile", "bin/couch_docs", "couch_docs.gemspec", "fixtures/_design/a/b/c.js", "fixtures/_design/a/b/d.js", "fixtures/bar.json", "fixtures/foo.json", "lib/couch_docs.rb", "lib/couch_docs/design_directory.rb", "lib/couch_docs/document_directory.rb", "lib/couch_docs/store.rb", "spec/couch_docs_spec.rb", "spec/spec_helper.rb", "test/test_couch_docs.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/eee-c/couch_docs}
-  s.rdoc_options = ["--main", "README.txt"]
+  s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{couch_docs}
   s.rubygems_version = %q{1.3.1}
