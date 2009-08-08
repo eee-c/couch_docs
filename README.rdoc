@@ -1,6 +1,7 @@
 couch_docs
     by Chris Strom
     http://github.com/eee-c/couch_docs
+    (used to be couch_design_docs)
 
 == DESCRIPTION:
 
