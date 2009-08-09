@@ -57,7 +57,7 @@ module CouchDocs
 
     def each
       Store.get("#{url}/_all_docs")['rows'].each do |rec|
-        yield Store.get("#{url}/#{rec['id']}")
+        yield Store.get("#{url}/#{rec['id']}?attachments=true")
       end
     end
   end

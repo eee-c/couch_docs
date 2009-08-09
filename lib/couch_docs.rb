@@ -55,7 +55,7 @@ module CouchDocs
     store.
       map.
       reject { |doc| doc['_id'] =~ /^_design/ }.
-      each   { |doc| dir.store_document(doc) }
+      each   { |doc| doc.delete('_rev'); dir.store_document(doc) }
   end
 
   # Returns the library path for the module. If any arguments are given,

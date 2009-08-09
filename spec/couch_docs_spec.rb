@@ -69,6 +69,15 @@ describe CouchDocs do
 
       CouchDocs.dump("uri", "fixtures")
     end
+    it "should strip revision numbers" do
+      @store.stub!(:map).
+        and_return([{'_id' => 'foo', '_rev' => '1-1234'}])
+      @dir.
+        should_receive(:store_document).
+        with({'_id' => 'foo'})
+
+      CouchDocs.dump("uri", "fixtures")
+    end
   end
 end
 
@@ -162,8 +171,8 @@ describe Store do
                      "rows"       => [{"id"=>"1", "value"=>{}, "key"=>"1"},
                                       {"id"=>"2", "value"=>{}, "key"=>"2"}]})
 
-      Store.stub!(:get).with("uri/1")
-      Store.should_receive(:get).with("uri/2")
+      Store.stub!(:get).with("uri/1?attachments=true")
+      Store.should_receive(:get).with("uri/2?attachments=true")
 
       @it.each { }
     end
