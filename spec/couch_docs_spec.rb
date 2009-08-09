@@ -267,4 +267,54 @@ describe DesignDirectory do
   end
 end
 
+describe CommandLine do
+  it "should be able to run a single instance of a command line" do
+    CommandLine.
+      should_receive(:new).
+      with('foo', 'bar').
+      and_return(mock("Command Line").as_null_object)
+
+    CommandLine.run('foo', 'bar')
+  end
+
+  it "should run the command line instance" do
+    command_line = mock("Command Line").as_null_object
+    command_line.
+      should_receive(:run)
+
+    CommandLine.stub!(:new).and_return(command_line)
+
+    CommandLine.run('foo', 'bar')
+  end
+
+  context "an instance that dumps a CouchDB database" do
+    before(:each) do
+      @it = CommandLine.new(['dump', 'uri', 'dir'])
+    end
+
+    it "should dump CouchDB documents from uri to dir when run" do
+      CouchDocs.
+        should_receive(:dump).
+        with("uri", "dir")
+
+      @it.run
+    end
+  end
+
+  context "an instance that uploads to a CouchDB database" do
+    before(:each) do
+      @it = CommandLine.new(['load', 'dir', 'uri'])
+    end
+
+    it "should dump CouchDB documents from uri to dir when run" do
+      CouchDocs.
+        should_receive(:put_document_dir).
+        with("uri", "dir")
+
+      @it.run
+    end
+  end
+
+end
+
 # EOF
