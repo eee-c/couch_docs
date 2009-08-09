@@ -62,7 +62,7 @@ describe CouchDocs do
 
       CouchDocs.dump("uri", "fixtures")
     end
-    it "should be able to store all CouchDB documents on the filesystem" do
+    it "should ignore design documents" do
       @store.stub!(:map).and_return([{'_id' => '_design/foo'}])
       @dir.
         should_not_receive(:store_document)
