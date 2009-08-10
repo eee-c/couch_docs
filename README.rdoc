@@ -9,12 +9,35 @@ Manage CouchDB views and documents.
 
 == FEATURES/PROBLEMS:
 
-* Store your CouchDB documents on the filesystem for on-demand
-  upload.  Design documents are kept in a <tt>_design</tt>
-  sub-directory, with <tt>.js</tt> extensions.  Normal documents are
-  stored with a <tt>.json</tt> extension.
+* Upload JSON documents stored on the filesystem into a CouchDB
+  database.
+
+* Map <tt>.js</tt> files stored on the filesystem
+  (e.g. <tt>_design/recipes/count_by_month/map.js</tt>) into CouchDB
+  design documents.
+
+* Dump documents stored in CouchDB to the filesystem.
+
+* Script (couch-docs) to restore / backup CouchDB database.
+
+* The couch-docs scipts does not work with design documents.
+
+* A progress bar would be helpful.
+
+* Unit testing of view javascript would be very nice.
 
 == SYNOPSIS:
+
+  From the command line:
+
+  # For dumping the contents of a CouchDB database to the filesystem
+  couch-docs dump "http://localhost:5984/db" path/to/dump_dir/
+
+  # For loading documents from the filesystem into CouchDB
+  couch-docs load path/to/dump_dir/ "http://localhost:5984/db"
+
+
+  In code:
 
   DB_URL = "http://localhost:5984/db"
   DIRECTORY = "/repos/db/couchdb/"
@@ -30,6 +53,10 @@ Manage CouchDB views and documents.
   #    a document named "foo" with the JSON contents from the foo.json
   #    file
 
+  CouchDocs.dump(DB_URL, "/repos/db/bak")
+
+  # => JSON dump of every document at DB_URL
+
 == REQUIREMENTS:
 
 * CouchDB
@@ -38,7 +65,7 @@ Manage CouchDB views and documents.
 
 == INSTALL:
 
-* sudo gem install couch_docs
+* sudo gem install eee-c-couch_docs
 
 == LICENSE:
 
