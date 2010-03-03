@@ -286,32 +286,6 @@ describe DesignDirectory do
     end
   end
 
-  context "storing" do
-    before(:each) do
-      @it = DesignDirectory.new("/tmp")
-      @it.stub!(:save_js)
-      @design_doc = {
-        "_id" => "_design/foo",
-        "bar" => "function () { 'bar' }",
-        "baz" => {
-          "json" => "function () { 'baz' }"
-        }
-      }
-    end
-
-    it "should not store _id"
-
-    it "should save shallow attributes" do
-      @it.
-        should_receive(:save_js).
-        with("_design/foo",
-             "bar",
-             "function () { 'bar' }")
-
-      @it.store_document(@design_doc)
-    end
-  end
-
   context "saving a JS attribute" do
     before(:each) do
       @it = DesignDirectory.new("/tmp")
@@ -319,6 +293,14 @@ describe DesignDirectory do
       FileUtils.stub!(:mkdir_p)
       @file = mock("File").as_null_object
       File.stub!(:new).and_return(@file)
+    end
+
+    it "should not store _id" do
+      File.
+        should_not_receive(:new).
+        with("/tmp/_design/foo/_id.js", "w+")
+
+      @it.save_js(nil, "_design/foo", { "_id" => "_design/foo"})
     end
 
     it "should create map the design document attribute to the filesystem" do
@@ -337,8 +319,16 @@ describe DesignDirectory do
       @it.save_js("_design/foo", "bar", "json")
     end
 
+    it "should store hash values to the filesystem" do
+      File.
+        should_receive(:new).
+        with("/tmp/_design/foo/bar/baz.js", "w+")
+
+      @it.save_js("_design/foo", "bar", { "baz" => "json" })
+    end
+
     it "should store the attribute to the filesystem" do
-      @file.should_receive(:write).with("\"json\"")
+      @file.should_receive(:write).with("json")
 
       @it.save_js("_design/foo", "bar", "json")
     end
@@ -387,7 +377,7 @@ describe CommandLine do
 
     it "should dump CouchDB documents from uri to dir when run" do
       CouchDocs.
-        should_receive(:put_document_dir).
+        should_receive(:put_dir).
         with("uri", "dir")
 
       @it.run
