@@ -42,5 +42,21 @@ module CouchDocs
        File.new(filename).read
       ]
     end
+
+    def store_document(doc)
+      id = doc['_id']
+      doc.each_pair do |key, value|
+        self.save_js(id, key, value)
+      end
+    end
+
+    def save_js(rel_path, key, value)
+      path = couch_view_dir + '/' + rel_path
+      FileUtils.mkdir_p(path)
+
+      file = File.new("#{path}/#{key}.js", "w+")
+      file.write(value.to_json)
+      file.close
+    end
   end
 end

@@ -45,6 +45,12 @@ module CouchDocs
         :content_type => 'application/json'
     end
 
+    def self.post(path, doc)
+      RestClient.post path,
+        doc.to_json,
+        :content_type => 'application/json'
+    end
+
     def self.delete(path)
       # retrieve existing to obtain the revision
       old = self.get(path)

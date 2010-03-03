@@ -1,6 +1,14 @@
 require File.join(File.dirname(__FILE__), %w[spec_helper])
 
 describe CouchDocs do
+  it "should be able to create (or delete/create) a DB" do
+    Store.
+      should_receive(:put!).
+      with("couchdb_url", anything())
+
+    CouchDocs.destructive_database_create("couchdb_url")
+  end
+
   it "should be able to load design and normal documents" do
     CouchDocs.
       should_receive(:put_design_dir).
@@ -50,6 +58,9 @@ describe CouchDocs do
     before(:each) do
       @store = mock("Store")
       Store.stub!(:new).and_return(@store)
+
+      des_dir = mock("Design Directory").as_null_object
+      DesignDirectory.stub!(:new).and_return(des_dir)
 
       @dir = mock("Document Directory")
       DocumentDirectory.stub!(:new).and_return(@dir)
@@ -273,6 +284,65 @@ describe DesignDirectory do
 
       }
     end
+  end
+
+  context "storing" do
+    before(:each) do
+      @it = DesignDirectory.new("/tmp")
+      @it.stub!(:save_js)
+      @design_doc = {
+        "_id" => "_design/foo",
+        "bar" => "function () { 'bar' }",
+        "baz" => {
+          "json" => "function () { 'baz' }"
+        }
+      }
+    end
+
+    it "should not store _id"
+
+    it "should save shallow attributes" do
+      @it.
+        should_receive(:save_js).
+        with("_design/foo",
+             "bar",
+             "function () { 'bar' }")
+
+      @it.store_document(@design_doc)
+    end
+  end
+
+  context "saving a JS attribute" do
+    before(:each) do
+      @it = DesignDirectory.new("/tmp")
+
+      FileUtils.stub!(:mkdir_p)
+      @file = mock("File").as_null_object
+      File.stub!(:new).and_return(@file)
+    end
+
+    it "should create map the design document attribute to the filesystem" do
+      FileUtils.
+        should_receive(:mkdir_p).
+        with("/tmp/_design/foo")
+
+      @it.save_js("_design/foo", "bar", "json")
+    end
+
+    it "should store the attribute to the filesystem" do
+      File.
+        should_receive(:new).
+        with("/tmp/_design/foo/bar.js", "w+")
+
+      @it.save_js("_design/foo", "bar", "json")
+    end
+
+    it "should store the attribute to the filesystem" do
+      @file.should_receive(:write).with("\"json\"")
+
+      @it.save_js("_design/foo", "bar", "json")
+    end
+
   end
 end
 

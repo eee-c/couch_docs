@@ -1,7 +1,7 @@
 module CouchDocs
 
   # :stopdoc:
-  VERSION = '1.0.0'
+  VERSION = '1.1.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   # :startdoc:
@@ -51,11 +51,18 @@ module CouchDocs
   #
   def self.dump(db_uri, dir)
     store = Store.new(db_uri)
-    dir = DocumentDirectory.new(dir)
-    store.
-      map.
-      reject { |doc| doc['_id'] =~ /^_design/ }.
-      each   { |doc| doc.delete('_rev'); dir.store_document(doc) }
+    doc_dir    = DocumentDirectory.new(dir)
+    design_dir = DesignDirectory.new(dir)
+    store.map.each do |doc|
+      doc.delete('_rev')
+      (doc['_id'] =~ /^_design/ ? design_dir : doc_dir).
+        store_document(doc)
+    end
+  end
+
+  # Create or recreate the database located at <tt>db_uri</tt>
+  def self.destructive_database_create(db_uri)
+    Store.put!(db_uri, "")
   end
 
   # Returns the library path for the module. If any arguments are given,
