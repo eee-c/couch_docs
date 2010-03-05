@@ -38,7 +38,7 @@ module CouchDocs
         gsub(/#{couch_view_dir}\/?/, '').
         split(/\//) +
       [
-       File.basename(filename, '.js'),
+       File.basename(filename, '.js').gsub(/%2F/, '/'),
        File.new(filename).read
       ]
     end
@@ -59,7 +59,7 @@ module CouchDocs
         path = couch_view_dir + '/' + rel_path
         FileUtils.mkdir_p(path)
 
-        file = File.new("#{path}/#{key}.js", "w+")
+        file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.js", "w+")
         file.write(value)
         file.close
       end

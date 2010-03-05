@@ -346,11 +346,20 @@ describe DesignDirectory do
     end
 
     it "should store the attribute to the filesystem" do
-      @file.should_receive(:write).with("json")
+      @file.
+        should_receive(:write).
+        with("json")
 
       @it.save_js("_design/foo", "bar", "json")
     end
 
+    it "should store the attributes with slashes to the filesystem" do
+      File.
+        should_receive(:new).
+        with("/tmp/_design/foo/bar%2Fbaz.js", "w+")
+
+      @it.save_js("_design/foo", "bar/baz", "json")
+    end
   end
 end
 
