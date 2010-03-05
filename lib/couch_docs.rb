@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module CouchDocs
 
   # :stopdoc:
@@ -49,10 +51,15 @@ module CouchDocs
   # Dump all documents located at <tt>db_uri</tt> into the directory
   # <tt>dir</tt>
   #
-  def self.dump(db_uri, dir)
-    store = Store.new(db_uri)
-    doc_dir    = DocumentDirectory.new(dir)
-    design_dir = DesignDirectory.new(dir)
+  def self.dump(db_uri, dir, only=nil)
+    null_dir = OpenStruct.new(:store_document => nil)
+
+    doc_dir = (only == :design) ?
+      null_dir : DocumentDirectory.new(dir)
+    design_dir = (only == :doc) ?
+      null_dir : DesignDirectory.new(dir)
+
+    store = Store.new(db_uri, :only => only)
     store.map.each do |doc|
       doc.delete('_rev')
       (doc['_id'] =~ /^_design/ ? design_dir : doc_dir).

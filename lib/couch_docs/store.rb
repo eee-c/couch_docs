@@ -6,13 +6,14 @@ module CouchDocs
   class Store
     include Enumerable
 
-    attr_accessor :url
+    attr_accessor :url, :design_docs_only
 
     # Initialize a CouchDB store object.  Requires a URL for the
     # target CouchDB database.
     #
-    def initialize(url)
+    def initialize(url, options={})
       @url = url
+      @design_docs_only = (options[:only] == :design)
     end
 
     # Loads all supplied design documents in the current store.
@@ -62,7 +63,9 @@ module CouchDocs
     end
 
     def each
-      Store.get("#{url}/_all_docs")['rows'].each do |rec|
+      all_url = "#{url}/_all_docs" +
+        (design_docs_only ? '?startkey=%22_design%22&endkey=%22_design0%22' : "")
+      Store.get(all_url)['rows'].each do |rec|
         yield Store.get("#{url}/#{rec['id']}?attachments=true")
       end
     end

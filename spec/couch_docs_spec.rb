@@ -59,10 +59,10 @@ describe CouchDocs do
       @store = mock("Store")
       Store.stub!(:new).and_return(@store)
 
-      des_dir = mock("Design Directory").as_null_object
-      DesignDirectory.stub!(:new).and_return(des_dir)
+      @des_dir = mock("Design Directory").as_null_object
+      DesignDirectory.stub!(:new).and_return(@des_dir)
 
-      @dir = mock("Document Directory")
+      @dir = mock("Document Directory").as_null_object
       DocumentDirectory.stub!(:new).and_return(@dir)
     end
     it "should be able to store all CouchDB documents on the filesystem" do
@@ -88,6 +88,24 @@ describe CouchDocs do
         with({'_id' => 'foo'})
 
       CouchDocs.dump("uri", "fixtures")
+    end
+    it "should not dump regular docs when asked for only design docs" do
+      @store.stub!(:map).
+        and_return([{'foo' => 'bar'}])
+
+      @dir.
+        should_not_receive(:store_document)
+
+      CouchDocs.dump("uri", "fixtures", :design)
+    end
+    it "should not dump design docs when asked for only regular docs" do
+      @store.stub!(:map).
+        and_return([{'_id' => '_design/foo'}])
+
+      @des_dir.
+        should_not_receive(:store_document)
+
+      CouchDocs.dump("uri", "fixtures", :doc)
     end
   end
 end
@@ -357,14 +375,32 @@ describe CommandLine do
   end
 
   context "an instance that dumps a CouchDB database" do
-    before(:each) do
-      @it = CommandLine.new(['dump', 'uri', 'dir'])
-    end
-
     it "should dump CouchDB documents from uri to dir when run" do
+      @it = CommandLine.new(['dump', 'uri', 'dir'])
+
       CouchDocs.
         should_receive(:dump).
-        with("uri", "dir")
+        with("uri", "dir", nil)
+
+      @it.run
+    end
+
+    it "should be able to dump only design documents" do
+      @it = CommandLine.new(['dump', 'uri', 'dir', '-d'])
+
+      CouchDocs.
+        should_receive(:dump).
+        with("uri", "dir", :design)
+
+      @it.run
+    end
+
+    it "should be able to dump only regular documents" do
+      @it = CommandLine.new(['dump', 'uri', 'dir', '-D'])
+
+      CouchDocs.
+        should_receive(:dump).
+        with("uri", "dir", :doc)
 
       @it.run
     end

@@ -20,7 +20,8 @@ module CouchDocs
       case command
       when "dump"
         CouchDocs.dump(@options[:couchdb_url],
-                       @options[:target_dir])
+                       @options[:target_dir],
+                       @options[:dump])
       when "push"
         if @options[:destructive]
           CouchDocs.destructive_database_create(options[:couchdb_url])
@@ -60,10 +61,10 @@ module CouchDocs
         opts.separator "Dump options:"
 
         opts.on("-d", "--design", "Only dump design documents") do
-          @options[:design_docs_only] = true
+          @options[:dump] = :design
         end
         opts.on("-D", "--data", "Only dump data documents") do
-          @options[:data_docs_only] = true
+          @options[:dump] = :doc
         end
 
         opts.separator ""
