@@ -302,6 +302,20 @@ describe DesignDirectory do
 
       }
     end
+
+    it "should replace !code macros with the contents of the referenced file in lib" do
+      @it.stub!(:read_from_lib).and_return("awesome javascript")
+
+      @it.
+        process_code_macro(" // !code foo/bar.js ").
+        should == "awesome javascript"
+    end
+
+    it "should not affect normal lines when processing macros" do
+      @it.
+        process_code_macro(" var foo = 'bar'; ").
+        should == " var foo = 'bar'; "
+    end
   end
 
   context "saving a JS attribute" do

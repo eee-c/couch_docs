@@ -25,6 +25,8 @@ module CouchDocs
       @couch_view_dir = path
     end
 
+    # Load
+
     def to_hash
       Dir["#{couch_view_dir}/**/*.js"].inject({}) do |memo, filename|
         DesignDirectory.
@@ -42,6 +44,16 @@ module CouchDocs
        File.new(filename).read
       ]
     end
+
+    def process_code_macro(line)
+      if line =~ %r{\s*//\s*!code\s*(\S+)\s*}
+        read_from_lib($1)
+      else
+        line
+      end
+    end
+
+    # Store
 
     def store_document(doc)
       id = doc['_id']
