@@ -291,15 +291,21 @@ describe DesignDirectory do
     end
 
     it "should assemble all documents into a single docs structure" do
-      @it.to_hash.
+      @it.to_hash['a'].
         should == {
-        'a' => {
           'b' => {
             'c' => 'function(doc) { return true; }',
             'd' => 'function(doc) { return true; }'
           }
         }
+    end
 
+    it "should process code macros when assembling" do
+      @it.to_hash['x'].
+        should == {
+          'z' =>
+           "function foo () { return \"foo\"; }\n" +
+           "function bar () { return \"bar\"; }\n"
       }
     end
 
@@ -316,6 +322,15 @@ describe DesignDirectory do
         process_code_macro(" var foo = 'bar'; ").
         should == " var foo = 'bar'; "
     end
+
+    it "should find files with relative paths in __lib" do
+      File.
+        should_receive(:read).
+        with("fixtures/_design/__lib/foo.js")
+
+      @it.read_from_lib("foo.js")
+    end
+
   end
 
   context "saving a JS attribute" do

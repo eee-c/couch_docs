@@ -41,8 +41,15 @@ module CouchDocs
         split(/\//) +
       [
        File.basename(filename, '.js').gsub(/%2F/, '/'),
-       File.new(filename).read
+       read_value(filename)
       ]
+    end
+
+    def read_value(filename)
+      File.
+        readlines(filename).
+        map { |line| process_code_macro(line) }.
+        join
     end
 
     def process_code_macro(line)
@@ -51,6 +58,10 @@ module CouchDocs
       else
         line
       end
+    end
+
+    def read_from_lib(path)
+      File.read("#{couch_view_dir}/__lib/#{path}")
     end
 
     # Store
