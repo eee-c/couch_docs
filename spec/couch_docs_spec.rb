@@ -304,17 +304,21 @@ describe DesignDirectory do
       @it.to_hash['x'].
         should == {
           'z' =>
+           "// !begin code foo.js\n" +
            "function foo () { return \"foo\"; }\n" +
+           "// !end code foo.js\n" +
            "function bar () { return \"bar\"; }\n"
       }
     end
+
+    it "should work with absolute !code paths"
 
     it "should replace !code macros with the contents of the referenced file in lib" do
       @it.stub!(:read_from_lib).and_return("awesome javascript")
 
       @it.
         process_code_macro(" // !code foo/bar.js ").
-        should == "awesome javascript"
+        should =~ /awesome javascript/
     end
 
     it "should not affect normal lines when processing macros" do
@@ -388,6 +392,24 @@ describe DesignDirectory do
         with("/tmp/_design/foo/bar%2Fbaz.js", "w+")
 
       @it.save_js("_design/foo", "bar/baz", "json")
+    end
+
+    it "should strip lib code when dumping" do
+      js = <<_JS
+// !begin code foo.js
+function foo () { return 'foo'; }
+// !end code foo.js
+// !begin code bar.js
+function bar () { return 'bar'; }
+// !end code bar.js
+function baz () { return 'baz'; }
+_JS
+
+      @it.
+        remove_code_macros(js).
+        should == "// !code foo.js\n" +
+                  "// !code bar.js\n" +
+                  "function baz () { return 'baz'; }\n"
     end
   end
 end

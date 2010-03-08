@@ -54,7 +54,9 @@ module CouchDocs
 
     def process_code_macro(line)
       if line =~ %r{\s*//\s*!code\s*(\S+)\s*}
-        read_from_lib($1)
+        "// !begin code #{$1}\n" +
+        read_from_lib($1) +
+        "// !end code #{$1}\n"
       else
         line
       end
@@ -83,8 +85,18 @@ module CouchDocs
         FileUtils.mkdir_p(path)
 
         file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.js", "w+")
-        file.write(value)
+        file.write(remove_code_macros(value))
         file.close
+      end
+    end
+
+    def remove_code_macros(js)
+      js =~ %r{// !begin code ([.\w]+)$}m
+      lib = $1
+      if lib and js =~ %r{// !end code #{lib}$}m
+        remove_code_macros(js.sub(%r{// !begin code #{lib}.+// !end code #{lib}}m, "// !code #{lib}"))
+      else
+        js
       end
     end
   end
