@@ -466,12 +466,40 @@ describe CommandLine do
     end
   end
 
+  context "pushing" do
+    before(:each) do
+      CouchDocs.stub!(:put_dir)
+
+      @dw = mock("Directory Watcher").as_null_object
+      DirectoryWatcher.stub!(:new).and_return(@dw)
+    end
+
+    it "should know watch" do
+      @it = CommandLine.new(%w(push uri dir -w))
+      @it.options[:watch].should be_true
+    end
+
+    it "should run once normally" do
+      @dw.should_receive(:run_once)
+
+      @it = CommandLine.new(%w(push uri dir))
+      @it.run
+    end
+
+    it "should start a watcher with -w" do
+      @dw.should_receive(:start)
+
+      @it = CommandLine.new(%w(push uri dir -w))
+      @it.run
+    end
+  end
+
   context "an instance that uploads to a CouchDB database" do
     before(:each) do
       @it = CommandLine.new(['load', 'dir', 'uri'])
     end
 
-    it "should dump CouchDB documents from uri to dir when run" do
+    it "should load CouchDB documents from dir to uri when run" do
       CouchDocs.
         should_receive(:put_dir).
         with("uri", "dir")

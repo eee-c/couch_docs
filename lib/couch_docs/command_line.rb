@@ -1,5 +1,6 @@
 require 'optparse'
 require 'pp'
+require 'directory_watcher'
 
 module CouchDocs
   class CommandLine
@@ -26,8 +27,29 @@ module CouchDocs
         if @options[:destructive]
           CouchDocs.destructive_database_create(options[:couchdb_url])
         end
-        CouchDocs.put_dir(@options[:couchdb_url],
-                          @options[:target_dir])
+
+        dw = DirectoryWatcher.new @options[:target_dir]
+        dw.glob = '**/*'
+        dw.interval = 2.0
+
+        dw.add_observer do |*args|
+          puts "Updating documents on CouchDB Server..."
+          CouchDocs.put_dir(@options[:couchdb_url],
+                            @options[:target_dir])
+        end
+
+        if @options[:watch]
+          dw.start
+
+          begin
+            sleep 30 while true
+          rescue Interrupt
+            dw.stop
+            puts
+          end
+        else
+          dw.run_once
+        end
       when "load" # DEPRECATED
         CouchDocs.put_dir(@options[:target_dir],
                           @options[:couchdb_url])
@@ -51,10 +73,15 @@ module CouchDocs
           @options[:destructive] = true
         end
 
-        opts.on("-b", "--bulk [BATCH_SIZE=1000]", Integer,
-                "Use bulk insert when pushing new documents") do |batch_size|
-          @options[:bulk] = true
-          @options[:batch_size] = batch_size || 1000
+        # TODO: bulk_docs in 1.2
+        # opts.on("-b", "--bulk [BATCH_SIZE=1000]", Integer,
+        #         "Use bulk insert when pushing new documents") do |batch_size|
+        #   @options[:bulk] = true
+        #   @options[:batch_size] = batch_size || 1000
+        # end
+
+        opts.on("-w", "--watch", "Watch the directory for changes, uploading when detected") do
+          @options[:watch] = true
         end
 
         opts.separator ""

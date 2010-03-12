@@ -27,11 +27,13 @@ PROJ.rubyforge.name = 'couch_docs'
 
 PROJ.spec.opts << '--color'
 
-PROJ.gem.dependencies = %w{json rest-client}
+#PROJ.gem.dependencies = %w{json rest-client}
+PROJ.gem.development_dependencies << 'rspec'
 
 PROJ.readme_file = 'README.rdoc'
 
 depend_on 'rest-client'
 depend_on 'json'
+depend_on 'directory_watcher'
 
 # EOF
