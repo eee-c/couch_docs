@@ -16,11 +16,15 @@ Manage CouchDB views and documents.
   (e.g. <tt>_design/recipes/count_by_month/map.js</tt>) into CouchDB
   design documents.
 
+  * Support for the <tt>!code</tt> macro from couchapp (useful for
+    DRYing up map/reduce views as well as list/show documents.
+
 * Dump documents stored in CouchDB to the filesystem.
 
 * Script (couch-docs) to restore / backup CouchDB database.
 
-* The couch-docs scipts does not work with design documents.
+  * Multiple options including a directory watcher for uploading
+    directory changes
 
 * A progress bar would be helpful.
 
@@ -34,7 +38,7 @@ Manage CouchDB views and documents.
   couch-docs dump "http://localhost:5984/db" path/to/dump_dir/
 
   # For loading documents from the filesystem into CouchDB
-  couch-docs load path/to/dump_dir/ "http://localhost:5984/db"
+  couch-docs load "http://localhost:5984/db" path/to/dump_dir/
 
 
   In code:
@@ -62,16 +66,17 @@ Manage CouchDB views and documents.
 * CouchDB
 * JSON
 * RestClient
+* DirectoryWatcher
 
 == INSTALL:
 
-* sudo gem install eee-c-couch_docs
+* sudo gem install couch_docs
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2009
+Copyright (c) 2010
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

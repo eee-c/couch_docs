@@ -1,3 +1,13 @@
+== 1.1.0 / 2010-03-13
+
+ * Better command line experience.
+   * Default to current directory.
+   * Print help without args / better format (optparse).
+ * Support the !code macro from couchapp.
+ * Support a flag (-d) to only work on design docs.
+ * Can create the DB if it doesn't already exist
+ * Command line can be used to watch for local changes to be pushed immediately to the CouchDB server.
+
 == 1.0.0 / 2009-08-09
 
 * Update the couch-docs script to be able to dump a CouchDB database
