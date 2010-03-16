@@ -30,6 +30,8 @@ Manage CouchDB views and documents.
 
 * Unit testing of view javascript would be very nice.
 
+* Will almost certainly not work for large datasets (>10k documents).
+
 == SYNOPSIS:
 
   From the command line:
