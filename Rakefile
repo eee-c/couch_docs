@@ -32,7 +32,7 @@ PROJ.gem.development_dependencies << 'rspec'
 
 PROJ.readme_file = 'README.rdoc'
 
-depend_on 'rest-client'
+depend_on 'rest-client', "~> 1.1.0"
 depend_on 'json'
 depend_on 'directory_watcher'
 
