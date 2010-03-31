@@ -1,3 +1,8 @@
+== 1.2.0 / 2010-03-29
+
+ * Directory watcher only applies individual changes, not entire
+   directory when individual changes are made.
+
 == 1.1.1 / 2010-03-15
 
  * Require RestClient 1.1.

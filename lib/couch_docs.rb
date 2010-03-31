@@ -3,7 +3,7 @@ require 'ostruct'
 module CouchDocs
 
   # :stopdoc:
-  VERSION = '1.1.1'
+  VERSION = '1.2.0'
   LIBPATH = ::File.expand_path(::File.dirname(__FILE__)) + ::File::SEPARATOR
   PATH = ::File.dirname(LIBPATH) + ::File::SEPARATOR
   # :startdoc:
@@ -41,11 +41,20 @@ module CouchDocs
   # located at <tt>db_uri</tt>
   #
   def self.put_document_dir(db_uri, dir)
-    store = Store.new(db_uri)
     dir = DocumentDirectory.new(dir)
     dir.each_document do |name, contents|
       Store.put!("#{db_uri}/#{name}", contents)
     end
+  end
+
+
+  # Upload a document located at <tt>file_path</tt> to the CouchDB database
+  # located at <tt>db_uri</tt>
+  #
+  def self.put_file(db_uri, file_path)
+    contents = JSON.parse(File.read(file_path))
+    name = File.basename(file_path, ".json")
+    Store.put!("#{db_uri}/#{name}", contents)
   end
 
   # Dump all documents located at <tt>db_uri</tt> into the directory

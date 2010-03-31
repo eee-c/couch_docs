@@ -34,15 +34,14 @@ module CouchDocs
 
         dw.add_observer do |*args|
           puts "Updating documents on CouchDB Server..."
-          CouchDocs.put_dir(@options[:couchdb_url],
-                            @options[:target_dir])
+          directory_watcher_update(args)
         end
 
         if @options[:watch]
           dw.start
 
           begin
-            sleep 30 while true
+            sleep 30 while active?
           rescue Interrupt
             dw.stop
             puts
@@ -131,5 +130,36 @@ module CouchDocs
         raise e
       end
     end
+
+    def directory_watcher_update(args)
+      if initial_add? args
+        CouchDocs.put_dir(@options[:couchdb_url],
+                          @options[:target_dir])
+      else
+        if design_doc_update? args
+          CouchDocs.put_design_dir(@options[:couchdb_url],
+                                   "#{@options[:target_dir]}/_design")
+        end
+        documents(args).each do |update|
+          CouchDocs.put_file(@options[:couchdb_url],
+                             update.path)
+        end
+      end
+    end
+
+    def initial_add?(args)
+      args.all? { |f| f.type == :added }
+    end
+
+    def design_doc_update?(args)
+      args.any? { |f| f.path =~ /_design/ }
+    end
+
+    def documents(args)
+      args.reject { |f| f.path =~ /_design/ }
+    end
+
+    private
+    def active?; true end
   end
 end

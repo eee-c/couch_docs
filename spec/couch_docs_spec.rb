@@ -37,9 +37,6 @@ describe CouchDocs do
   end
 
   it "should be able to load documents into CouchDB" do
-    store = mock("Store")
-    Store.stub!(:new).and_return(store)
-
     dir = mock("Document Directory")
     dir.
       stub!(:each_document).
@@ -52,6 +49,16 @@ describe CouchDocs do
       with('uri/foo', {"foo" => "1"})
 
     CouchDocs.put_document_dir("uri", "fixtures")
+  end
+
+  it "should be able to upload a single document into CouchDB" do
+    Store.
+      should_receive(:put!).
+      with('uri/foo', {"foo" => "1"})
+
+    File.stub!(:read).and_return('{"foo": "1"}')
+
+    CouchDocs.put_file("uri", "/foo")
   end
 
   context "dumping CouchDB documents to a directory" do
@@ -464,6 +471,78 @@ describe CommandLine do
 
       @it.run
     end
+
+    it "should be an initial add if everything is an add" do
+      @it = CommandLine.new(['push', 'uri'])
+      args = [mock(:type => :added),
+              mock(:type => :added)]
+      @it.should be_initial_add(args)
+    end
+
+    it "should not be an initial add if something is not an add" do
+      @it = CommandLine.new(['push', 'uri'])
+      args = [mock(:type => :foo),
+              mock(:type => :added)]
+      @it.should_not be_initial_add(args)
+    end
+
+    it "should be a design docs update if something changes in _design" do
+      @it = CommandLine.new(['push', 'uri'])
+      args = [mock(:path => "foo"),
+              mock(:path => "_design")]
+      @it.should be_design_doc_update(args)
+    end
+
+    it "should know document updates" do
+      @it = CommandLine.new(['push', 'uri'])
+      doc_update = mock(:path => "foo")
+      args = [doc_update,
+              mock(:path => "_design")]
+
+      @it.
+        documents(args).
+        should == [doc_update]
+    end
+
+
+    context "updates on the filesystem" do
+      before(:each) do
+        @args = mock("args")
+        @it = CommandLine.new(%w(push uri dir))
+      end
+      it "should only update design docs if only local design docs have changed" do
+        CouchDocs.
+          should_receive(:put_dir)
+
+        @it.stub!(:initial_add?).and_return(true)
+        @it.directory_watcher_update(@args)
+      end
+      context "not an inital add" do
+        before(:each) do
+          @it.stub!(:initial_add?).and_return(false)
+          @it.stub!(:design_doc_update?).and_return(false)
+          @it.stub!(:documents).and_return([])
+          CouchDocs.stub!(:put_design_dir)
+        end
+        it "should update design docs if there are design document updates" do
+          CouchDocs.
+            should_receive(:put_design_dir)
+
+          @it.stub!(:design_doc_update?).and_return(true)
+          @it.directory_watcher_update(@args)
+        end
+        it "should update documents (if any)" do
+          file_mock = mock("File", :path => "/foo")
+          @it.stub!(:documents).and_return([file_mock])
+
+          CouchDocs.
+            should_receive(:put_file).
+            with("uri", "/foo")
+
+          @it.directory_watcher_update(@args)
+        end
+      end
+    end
   end
 
   context "pushing" do
@@ -490,6 +569,7 @@ describe CommandLine do
       @dw.should_receive(:start)
 
       @it = CommandLine.new(%w(push uri dir -w))
+      @it.stub!(:active?).and_return(false)
       @it.run
     end
   end
