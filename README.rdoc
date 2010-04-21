@@ -40,8 +40,10 @@ Manage CouchDB views and documents.
   couch-docs dump "http://localhost:5984/db" path/to/dump_dir/
 
   # For loading documents from the filesystem into CouchDB
-  couch-docs load "http://localhost:5984/db" path/to/dump_dir/
+  couch-docs push "http://localhost:5984/db" path/to/dump_dir/
 
+  The directory is optional for both dump and push (defaults to the
+  current working directory).
 
   In code:
 
