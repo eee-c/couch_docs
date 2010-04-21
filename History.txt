@@ -1,3 +1,7 @@
+== 1.2.1 / 2010-04-21
+
+ * Update README to reflect changes in 1.2.  No code changes.
+
 == 1.2.0 / 2010-03-29
 
  * Directory watcher only applies individual changes, not entire
