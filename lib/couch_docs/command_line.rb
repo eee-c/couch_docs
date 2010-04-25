@@ -1,5 +1,7 @@
 require 'optparse'
 require 'pp'
+
+require 'rubygems'
 require 'directory_watcher'
 
 module CouchDocs
