@@ -1,8 +1,9 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__))
 
-require File.expand_path(
-    File.join(File.dirname(__FILE__), %w[.. lib couch_docs]))
-
-include CouchDocs
+require 'rubygems'
+require 'couch_docs'
+require 'spec'
+require 'spec/autorun'
 
 Spec::Runner.configure do |config|
   # == Mock Framework
