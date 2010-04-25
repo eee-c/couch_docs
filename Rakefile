@@ -3,13 +3,14 @@
 # are where the options are used.
 
 begin
+  gem 'bones', '>= 2.5.1', '< 3.0.0'
   require 'bones'
   Bones.setup
 rescue LoadError
   begin
     load 'tasks/setup.rb'
   rescue LoadError
-    raise RuntimeError, '### please install the "bones" gem ###'
+    raise RuntimeError, '### please install the "bones" 2.5.1 gem ###'
   end
 end
 
