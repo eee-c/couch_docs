@@ -237,7 +237,8 @@ describe DocumentDirectory do
       @it.each_document do |name, contents|
         everything << [name, contents]
       end
-      everything.
+
+      everything.sort { |x,y| x[0] <=> y[0] }.
         should == [['bar', {"bar" => "2"}],
                    ['foo', {"foo" => "1"}]]
     end
