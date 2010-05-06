@@ -29,9 +29,14 @@ describe CouchDocs::DesignDirectory do
       @it = CouchDocs::DesignDirectory.new("fixtures/_design")
     end
 
-    it "should list dirs, basename and contents of a file" do
+    it "should list dirs, basename and contents of a js file" do
       @it.expand_file("fixtures/_design/a/b/c.js").
         should == ['a', 'b', 'c', 'function(doc) { return true; }']
+    end
+
+    it "should list dirs, basename and contents of a json file" do
+      @it.expand_file("fixtures/_design/a/e.json").
+        should == ['a', 'e', [{"one" => "2"}]]
     end
 
     it "should assemble all documents into a single docs structure" do
@@ -40,7 +45,8 @@ describe CouchDocs::DesignDirectory do
           'b' => {
             'c' => 'function(doc) { return true; }',
             'd' => 'function(doc) { return true; }'
-          }
+          },
+          'e' => [{"one" => "2"}]
         }
     end
 
@@ -53,6 +59,11 @@ describe CouchDocs::DesignDirectory do
            "// !end code foo.js\n" +
            "function bar () { return \"bar\"; }\n"
       }
+    end
+
+    it "should ignore macro escape sequence when reading JSON" do
+      @it.to_hash['j'].
+        should == {'q' => ["!code foo.js"]}
     end
 
     it "should work with absolute !code paths"
@@ -79,6 +90,10 @@ describe CouchDocs::DesignDirectory do
       @it.read_from_lib("foo.js")
     end
 
+  end
+
+  context "saving a JSON attribute" do
+    it "should not mangle json valued attributes"
   end
 
   context "saving a JS attribute" do

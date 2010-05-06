@@ -28,7 +28,7 @@ module CouchDocs
     # Load
 
     def to_hash
-      Dir["#{couch_view_dir}/**/*.js"].inject({}) do |memo, filename|
+      Dir["#{couch_view_dir}/**/*.{js,json}"].inject({}) do |memo, filename|
         DesignDirectory.
           a_to_hash(expand_file(filename)).
           deep_merge(memo)
@@ -36,16 +36,30 @@ module CouchDocs
     end
 
     def expand_file(filename)
+      if filename =~ /\.js$/
+        name_value_pair = [
+         File.basename(filename, '.js'),
+         read_js_value(filename)
+        ]
+      elsif filename =~ /\.json$/
+        name_value_pair = [
+         File.basename(filename, '.json'),
+         read_json_value(filename)
+        ]
+      end
+
+      name_value_pair[0].gsub!(/%2F/, '/')
+
       File.dirname(filename).
         gsub(/#{couch_view_dir}\/?/, '').
-        split(/\//) +
-      [
-       File.basename(filename, '.js').gsub(/%2F/, '/'),
-       read_value(filename)
-      ]
+        split(/\//) + name_value_pair
     end
 
-    def read_value(filename)
+    def read_json_value(filename)
+      JSON.parse(File.new(filename).read)
+    end
+
+    def read_js_value(filename)
       File.
         readlines(filename).
         map { |line| process_code_macro(line) }.
