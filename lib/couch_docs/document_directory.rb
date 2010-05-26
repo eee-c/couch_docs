@@ -1,3 +1,5 @@
+require 'base64'
+
 module CouchDocs
   class DocumentDirectory
 
@@ -10,9 +12,22 @@ module CouchDocs
 
     def each_document
       Dir["#{couch_doc_dir}/*.json"].each do |filename|
-        yield [ File.basename(filename, '.json'),
-                JSON.parse(File.new(filename).read) ]
+        id = File.basename(filename, '.json')
+        json = JSON.parse(File.new(filename).read)
 
+        if File.directory? "#{couch_doc_dir}/#{id}"
+          json["_attachments"] ||= { }
+          Dir["#{couch_doc_dir}/#{id}/*"].each do |attachment|
+            next unless File.file? attachment
+
+            attachment_name = File.basename(attachment)
+            data = File.read(attachment)
+            json["_attachments"][attachment_name] =
+              { "data" => Base64.encode64(data) }
+          end
+        end
+
+        yield [ id, json ]
       end
     end
 
