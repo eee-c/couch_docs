@@ -23,7 +23,9 @@ module CouchDocs
             attachment_name = File.basename(attachment)
             data = File.read(attachment)
             json["_attachments"][attachment_name] =
-              { "data" => Base64.encode64(data) }
+              {
+              "data" => Base64.encode64(data).gsub(/\n/, '')
+            }
           end
         end
 
