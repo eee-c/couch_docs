@@ -54,6 +54,8 @@ describe CouchDocs::DocumentDirectory do
       end
 
       it "should connect attachments by sub-directory name (foo.json => foo/)" do
+        @it.stub!(:mime_type)
+
         everything = []
         @it.each_document do |name, contents|
           everything << [name, contents]
@@ -70,8 +72,40 @@ describe CouchDocs::DocumentDirectory do
       it "should ignore non-file attachments" do
         # covered above
       end
-      it "should guess the mime type"
+
+      it "should guess the mime type" do
+        JSON.stub!(:parse).
+          and_return({ "baz" => "3",
+                       "_attachments" => {
+                         "spacer.gif" => "asdf",
+                       }
+                     })
+
+        everything = []
+        @it.each_document do |name, contents|
+          everything << [name, contents]
+        end
+
+        everything.
+          should include(['baz_with_attachments',
+            { 'baz' => '3',
+              "_attachments" => {
+                "spacer.gif" => {
+                  "data"         => @spacer_b64,
+                  "content_type" => "image/gif"
+                }
+              }
+            }])
+      end
+
+      it "should guess gif mime type"
+      it "should guess jpeg mime type"
+      it "should guess png mime type"
+      it "should default to no mime type"
+
       it "should give precedence to filesystem attachments" do
+        @it.stub!(:mime_type)
+
         JSON.stub!(:parse).
           and_return({ "baz" => "3",
                        "_attachments" => {
