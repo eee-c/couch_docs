@@ -73,35 +73,43 @@ describe CouchDocs::DocumentDirectory do
         # covered above
       end
 
-      it "should guess the mime type" do
-        JSON.stub!(:parse).
-          and_return({ "baz" => "3",
-                       "_attachments" => {
-                         "spacer.gif" => "asdf",
-                       }
-                     })
-
-        everything = []
-        @it.each_document do |name, contents|
-          everything << [name, contents]
+      context "infering mime type" do
+        before(:each) do
+          File.stub!(:read).and_return("asdf")
+          Base64.stub!(:encode64).and_return("asdf")
         end
 
-        everything.
-          should include(['baz_with_attachments',
-            { 'baz' => '3',
-              "_attachments" => {
-                "spacer.gif" => {
-                  "data"         => @spacer_b64,
-                  "content_type" => "image/gif"
-                }
-              }
-            }])
-      end
+        it "should guess gif mime type" do
+          @it.file_as_attachment("spacer.gif").
+            should == {
+            "data"         => "asdf",
+            "content_type" => "image/gif"
+          }
+        end
 
-      it "should guess gif mime type"
-      it "should guess jpeg mime type"
-      it "should guess png mime type"
-      it "should default to no mime type"
+        it "should guess jpeg mime type" do
+          @it.file_as_attachment("spacer.jpg").
+            should == {
+            "data"         => "asdf",
+            "content_type" => "image/jpeg"
+          }
+        end
+
+        it "should guess png mime type" do
+          @it.file_as_attachment("spacer.png").
+            should == {
+            "data"         => "asdf",
+            "content_type" => "image/png"
+          }
+        end
+
+        it "should default to no mime type" do
+          @it.file_as_attachment("spacer.foo").
+            should == {
+            "data"         => "asdf"
+          }
+        end
+      end
 
       it "should give precedence to filesystem attachments" do
         @it.stub!(:mime_type)

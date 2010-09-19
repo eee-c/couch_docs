@@ -34,7 +34,6 @@ module CouchDocs
       file.close
     end
 
-    private
     def file_as_attachment(file)
       type = mime_type(File.extname(file))
       data = File.read(file)
@@ -49,8 +48,13 @@ module CouchDocs
       attachment
     end
 
+    private
     def mime_type(extension)
-      "image/gif"
+      ({
+         ".gif" => "image/gif",
+         ".jpg" => "image/jpeg",
+         ".png" => "image/png"
+       })[extension]
     end
   end
 end
