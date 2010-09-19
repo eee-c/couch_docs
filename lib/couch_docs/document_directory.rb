@@ -19,18 +19,8 @@ module CouchDocs
           json["_attachments"] ||= { }
           Dir["#{couch_doc_dir}/#{id}/*"].each do |attachment|
             next unless File.file? attachment
-
             attachment_name = File.basename(attachment)
-            type = mime_type(File.extname(attachment))
-            data = File.read(attachment)
-            json["_attachments"][attachment_name] =
-              {
-                "data" => Base64.encode64(data).gsub(/\n/, '')
-              }
-            if type
-              json["_attachments"][attachment_name].
-                merge!({"content_type" => type})
-            end
+            json["_attachments"][attachment_name] = file_as_attachment(attachment)
           end
         end
 
@@ -45,6 +35,20 @@ module CouchDocs
     end
 
     private
+    def file_as_attachment(file)
+      type = mime_type(File.extname(file))
+      data = File.read(file)
+
+      attachment =  {
+        "data" => Base64.encode64(data).gsub(/\n/, '')
+      }
+      if type
+        attachment.merge!({"content_type" => type})
+      end
+
+      attachment
+    end
+
     def mime_type(extension)
       "image/gif"
     end
