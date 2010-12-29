@@ -1,3 +1,4 @@
-pkg
-couch_docs-*.gem
+pkg/*
+*.gem
+.bundle
 .rvmrc

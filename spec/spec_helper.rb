@@ -1,6 +1,3 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-
-require 'rubygems'
 require 'couch_docs'
 require 'spec'
 require 'spec/autorun'
