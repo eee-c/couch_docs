@@ -135,9 +135,35 @@ describe CouchDocs::DocumentDirectory do
 
     end
     context "dump attachments from CouchDB" do
-      it "should create a sub-directory with document ID"
+      before(:each) do
+        FileUtils.stub!(:mkdir_p)
+      end
+
+      it "should create a sub-directory with document ID" do
+        file = mock("File").as_null_object
+        File.stub!(:new).and_return(file)
+
+        FileUtils.
+          should_receive(:mkdir_p).
+          with("fixtures/foo")
+
+        @it.store_document({'_id' => 'foo',
+                            '_attachments' => 'foo'})
+      end
+
       it "should dump with native encoding (non-mime64)"
-      it "should not include the attachments attribute"
+
+      it "should not include the attachments attribute" do
+        file = mock("File", :close => true)
+        File.stub!(:new).and_return(file)
+
+        file.
+          should_receive(:write).
+          with('{"_id":"foo"}')
+
+        @it.store_document({'_id' => 'foo',
+                            '_attachments' => 'foo'})
+      end
     end
   end
 end

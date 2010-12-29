@@ -30,6 +30,10 @@ module CouchDocs
 
     def store_document(doc)
       file = File.new("#{couch_doc_dir}/#{doc['_id']}.json", "w+")
+      attachments = doc.delete('_attachments')
+      if attachments
+        FileUtils.mkdir_p "#{couch_doc_dir}/#{doc['_id']}"
+      end
       file.write(doc.to_json)
       file.close
     end
