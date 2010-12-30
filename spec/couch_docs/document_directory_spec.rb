@@ -139,19 +139,60 @@ describe CouchDocs::DocumentDirectory do
         FileUtils.stub!(:mkdir_p)
       end
 
-      it "should create a sub-directory with document ID" do
+      it "should store attachments" do
         file = mock("File").as_null_object
         File.stub!(:new).and_return(file)
 
-        FileUtils.
-          should_receive(:mkdir_p).
-          with("fixtures/foo")
+        @it.
+          should_receive(:store_attachments).
+          with('foo', 'bar')
 
         @it.store_document({'_id' => 'foo',
-                            '_attachments' => 'foo'})
+                            '_attachments' => 'bar'})
       end
 
-      it "should dump with native encoding (non-mime64)"
+      context "storing attachments" do
+        before(:each) do
+          @attachments = { 'foo.txt' => { 'data' => 'attachment data' } }
+        end
+
+        it "should make a directory to hold the attachments" do
+          @it.
+            should_receive(:make_attachment_dir).
+            with('foo')
+
+          @it.stub!(:save_attachment)
+          @it.store_attachments('foo', @attachments)
+        end
+
+        it "should create a sub-directory with document ID" do
+          FileUtils.
+            should_receive(:mkdir_p).
+            with("fixtures/foo")
+
+          @it.stub!(:save_attachment)
+          @it.make_attachment_dir('foo')
+        end
+
+        it "should save attachments to the filesystem" do
+          @it.
+            should_receive(:save_attachment).
+            with('foo', 'foo.txt', 'attachment data')
+
+          @it.stub!(:save_attachment)
+          @it.store_attachments('foo', @attachments)
+        end
+
+        it "should dump with native encoding (non-mime64)" do
+          file = mock("File").as_null_object
+          File.stub!(:new).and_return(file)
+
+          file.
+            should_receive(:write)
+
+          @it.save_attachment('foo', 'foo.txt', 'ZGF0YQ==')
+        end
+      end
 
       it "should not include the attachments attribute" do
         file = mock("File", :close => true)
@@ -160,6 +201,8 @@ describe CouchDocs::DocumentDirectory do
         file.
           should_receive(:write).
           with('{"_id":"foo"}')
+
+        @it.stub!(:store_attachments)
 
         @it.store_document({'_id' => 'foo',
                             '_attachments' => 'foo'})

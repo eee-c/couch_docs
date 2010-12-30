@@ -30,10 +30,7 @@ module CouchDocs
 
     def store_document(doc)
       file = File.new("#{couch_doc_dir}/#{doc['_id']}.json", "w+")
-      attachments = doc.delete('_attachments')
-      if attachments
-        FileUtils.mkdir_p "#{couch_doc_dir}/#{doc['_id']}"
-      end
+      store_attachments(doc['_id'], doc.delete('_attachments'))
       file.write(doc.to_json)
       file.close
     end
@@ -50,6 +47,25 @@ module CouchDocs
       end
 
       attachment
+    end
+
+    def store_attachments(id, attachments)
+      return unless attachments
+
+      make_attachment_dir(id)
+      attachments.each do |filename, opts|
+        save_attachment(id, filename, opts['data'])
+      end
+    end
+
+    def make_attachment_dir(id)
+      FileUtils.mkdir_p "#{couch_doc_dir}/#{id}"
+    end
+
+    def save_attachment(id, filename, data)
+      file = File.new "#{couch_doc_dir}/#{id}/#{filename}", "w"
+      file.write Base64.decode64(data)
+      file.close
     end
 
     private
