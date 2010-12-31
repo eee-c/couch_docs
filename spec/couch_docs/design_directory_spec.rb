@@ -93,16 +93,27 @@ describe CouchDocs::DesignDirectory do
   end
 
   context "saving a JSON attribute" do
-    it "should not mangle json valued attributes" do
+    before(:each) do
       @it = CouchDocs::DesignDirectory.new("/tmp")
 
       FileUtils.stub!(:mkdir_p)
       @file = mock("File").as_null_object
       File.stub!(:new).and_return(@file)
+    end
 
+    it "should not mangle json valued attributes" do
       @file.
         should_receive(:write).
         with(%{["bar","baz"]})
+
+      @it.save_js(nil, "_design/foo", { "foo" => ["bar","baz"] })
+    end
+
+    it "should save in a .json file" do
+      File.
+        should_receive(:new).
+        with("/tmp/_design/foo/foo.json", "w+").
+        and_return(@file)
 
       @it.save_js(nil, "_design/foo", { "foo" => ["bar","baz"] })
     end

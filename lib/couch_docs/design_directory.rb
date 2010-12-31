@@ -89,24 +89,9 @@ module CouchDocs
 
     def save_js(rel_path, key, value)
       if value.is_a? Hash
-        value.each_pair do |k, v|
-          next if k == '_id'
-          self.save_js([rel_path, key].compact.join('/'), k, v)
-        end
-      elsif value.is_a? String
-        path = couch_view_dir + '/' + rel_path
-        FileUtils.mkdir_p(path)
-
-        file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.js", "w+")
-        file.write(remove_code_macros(value))
-        file.close
+        save_js_hash(rel_path, key, value)
       else
-        path = couch_view_dir + '/' + rel_path
-        FileUtils.mkdir_p(path)
-
-        file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.json", "w+")
-        file.write(remove_code_macros(value.to_json))
-        file.close
+        save_js_value(rel_path, key, value)
       end
     end
 
@@ -118,6 +103,27 @@ module CouchDocs
       else
         js
       end
+    end
+
+    private
+    def save_js_hash(rel_path, id, hash)
+      hash.each_pair do |k, v|
+        next if k == '_id'
+        self.save_js([rel_path, id].compact.join('/'), k, v)
+      end
+    end
+
+    def save_js_value(rel_path, id, value)
+      ext = value.is_a?(String) ? "js" : "json"
+      value = value.is_a?(String) ? remove_code_macros(value) : value.to_json
+
+
+      path = couch_view_dir + '/' + rel_path
+      FileUtils.mkdir_p(path)
+
+      file = File.new("#{path}/#{id.gsub(/\//, '%2F')}.#{ext}", "w+")
+      file.write(value)
+      file.close
     end
   end
 end
