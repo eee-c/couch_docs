@@ -92,14 +92,20 @@ module CouchDocs
         value.each_pair do |k, v|
           next if k == '_id'
           self.save_js([rel_path, key].compact.join('/'), k, v)
-
         end
-      else
+      elsif value.is_a? String
         path = couch_view_dir + '/' + rel_path
         FileUtils.mkdir_p(path)
 
         file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.js", "w+")
         file.write(remove_code_macros(value))
+        file.close
+      else
+        path = couch_view_dir + '/' + rel_path
+        FileUtils.mkdir_p(path)
+
+        file = File.new("#{path}/#{key.gsub(/\//, '%2F')}.json", "w+")
+        file.write(remove_code_macros(value.to_json))
         file.close
       end
     end
