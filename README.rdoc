@@ -10,7 +10,7 @@ http://github.com/eee-c/couch_docs
 
 = DESCRIPTION
 
-I have two use cases for this: for uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.  It could also be useful as a cheap back mechanism, though it likely would not work well with large datasets (see PROBLEMS/FUTURE).
+I have two primary use cases: uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.  It could also be useful as a cheap back-up mechanism, though it likely would not work well with large datasets (see PROBLEMS/FUTURE).
 
 == Fixture Strategy
 
@@ -18,13 +18,13 @@ Before an integration test, I create a new CouchDB database with a randomly gene
 
   CouchDocs.put_dir(DB_URL, DIRECTORY)
 
-Then, I allow the test run to proceed normally.  At the end of the run, I then teardown the test database.
+Then, I allow the test run to proceed normally.  At the end of the run, I teardown the test database.
 
 Since CouchDB database creation / destruction is so cheap, this allows for quite fast integration tests -- even including necessary design documents.
 
 == Editing with Emacs
 
-I much prefer editing JSON documents in Emacs (any old editor should suffice) over using the Futon web interface built into CouchDB.  To initiate this, I start with the document(s) in a watched directory:
+I much prefer editing JSON documents in Emacs (lesser editors should work) over using the Futon web interface built into CouchDB.  To initiate this, I watch the directory containing the JSON document(s):
 
  couch-docs push -w localhost:5984/db
 
@@ -44,7 +44,11 @@ The -w option uses directory watcher to watch for any changes on the file system
 
 * Dump documents stored in CouchDB to the filesystem.
 
-* Command-line script (<tt>couch-docs</tt>) to push / dump CouchDB database.
+  * Attachments are stored as real files (not inline, mime64 encoded attributes on the JSON document)
+
+  * De-resolution of <tt>!code</tt> macros.
+
+* Command line script (<tt>couch-docs</tt>) to push / dump CouchDB database.
 
   * Multiple options including a directory watcher for uploading
     directory changes
