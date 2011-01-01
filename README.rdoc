@@ -3,7 +3,9 @@
 couch_docs - Manage CouchDB views and documents from the filesystem.
 
 Author: Chris Strom
+
 http://github.com/eee-c/couch_docs
+
 (formerly couch_design_docs)
 
 = DESCRIPTION
