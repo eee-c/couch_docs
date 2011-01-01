@@ -9,7 +9,7 @@ couch_docs
 
 Manage CouchDB views and documents from the filesystem.
 
-I have two use cases for this: for uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.
+I have two use cases for this: for uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.  It could also be useful as a cheap back mechanism, though it likely would not work well with large datasets (see PROBLEMS/FUTURE).
 
 == Fixture Strategy
 
@@ -43,7 +43,7 @@ The -w option uses directory watcher to watch for any changes on the file system
 
 * Dump documents stored in CouchDB to the filesystem.
 
-* Script (couch-docs) to push / dump CouchDB database.
+* Command-line script (<tt>couch-docs</tt>) to push / dump CouchDB database.
 
   * Multiple options including a directory watcher for uploading
     directory changes
