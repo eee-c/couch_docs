@@ -1,49 +1,63 @@
+= NAME
+
 couch_docs
     by Chris Strom
     http://github.com/eee-c/couch_docs
-    (used to be couch_design_docs)
+    (formerly couch_design_docs)
 
-== DESCRIPTION:
+= DESCRIPTION
 
-Manage CouchDB views and documents.
+Manage CouchDB views and documents from the filesystem.
 
-== FEATURES/PROBLEMS:
+I have two use cases for this: for uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.
+
+== Fixture Strategy
+
+Before an integration test, I create a new CouchDB database with a randomly generated name.  I use couch_docs to upload fixture data to that database:
+
+  CouchDocs.put_dir(DB_URL, DIRECTORY)
+
+Then, I allow the test run to proceed normally.  At the end of the run, I then then teardown the test database.
+
+Since CouchDB database creation / destruction is so cheap, this allows for quite fast integration tests -- even including necessary design documents.
+
+== Editing with Emacs
+
+I much prefer editing JSON documents in Emacs (any old editor should suffice) over using the Futon web interface built into CouchDB.  To initiate this, I start with the document(s) in a watched directory:
+
+ couch-docs push -w localhost:5984/db
+
+The -w option uses directory watcher to watch for any changes on the file system.  When a change occurs, the updated document is loaded to CouchDB immediately. This is very useful for rapid editing/prototyping of documents that are subsequently used in another medium (e.g. for a blog post).
+
+= FEATURES
 
 * Upload JSON documents stored on the filesystem into a CouchDB
   database.
 
-* Map <tt>.js</tt> files stored on the filesystem
-  (e.g. <tt>_design/recipes/count_by_month/map.js</tt>) into CouchDB
-  design documents.
+  * Map <tt>.js</tt> files stored on the filesystem
+    (e.g. <tt>_design/recipes/count_by_month/map.js</tt>) into CouchDB
+    design documents.
 
-  * Support for the <tt>!code</tt> macro from couchapp (useful for
-    DRYing up map/reduce views as well as list/show documents.
+    * Support for the <tt>!code</tt> macro from couchapp (useful for
+      DRYing up map/reduce views as well as list/show documents.
 
 * Dump documents stored in CouchDB to the filesystem.
 
-* Script (couch-docs) to restore / backup CouchDB database.
+* Script (couch-docs) to push / dump CouchDB database.
 
   * Multiple options including a directory watcher for uploading
     directory changes
 
-* A progress bar would be helpful.
-
-* Unit testing of view javascript would be very nice.
-
-* Will almost certainly not work for large datasets (>10k documents).
-
-== SYNOPSIS:
+= SYNOPSIS
 
   From the command line:
 
   # For dumping the contents of a CouchDB database to the filesystem
-  couch-docs dump "http://localhost:5984/db" path/to/dump_dir/
+  couch-docs dump http://localhost:5984/db
 
   # For loading documents from the filesystem into CouchDB
-  couch-docs push "http://localhost:5984/db" path/to/dump_dir/
+  couch-docs push http://localhost:5984/db
 
-  The directory is optional for both dump and push (defaults to the
-  current working directory).
 
   In code:
 
@@ -65,18 +79,28 @@ Manage CouchDB views and documents.
 
   # => JSON dump of every document at DB_URL
 
-== REQUIREMENTS:
+= REQUIREMENTS
 
 * CouchDB
 * JSON
 * RestClient
 * DirectoryWatcher
 
-== INSTALL:
+= INSTALL
 
 * sudo gem install couch_docs
 
-== LICENSE:
+= PROBLEMS/FUTURE
+
+* Does not honor CouchDB document revisions.  Instead it deletes previous revisions and uploads an entirely new one.
+
+* A progress bar would be helpful.
+
+* Unit testing of view javascript would be very nice.
+
+* Will almost certainly not work for large datasets (>10k documents).
+
+= LICENSE
 
 (The MIT License)
 
