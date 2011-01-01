@@ -1,13 +1,12 @@
 = NAME
 
-couch_docs
-    by Chris Strom
-    http://github.com/eee-c/couch_docs
-    (formerly couch_design_docs)
+couch_docs - Manage CouchDB views and documents from the filesystem.
+
+Author: Chris Strom
+http://github.com/eee-c/couch_docs
+(formerly couch_design_docs)
 
 = DESCRIPTION
-
-Manage CouchDB views and documents from the filesystem.
 
 I have two use cases for this: for uploading fixture data for integration testing and editing CouchDB documents in my favorite editor.  It could also be useful as a cheap back mechanism, though it likely would not work well with large datasets (see PROBLEMS/FUTURE).
 
@@ -17,7 +16,7 @@ Before an integration test, I create a new CouchDB database with a randomly gene
 
   CouchDocs.put_dir(DB_URL, DIRECTORY)
 
-Then, I allow the test run to proceed normally.  At the end of the run, I then then teardown the test database.
+Then, I allow the test run to proceed normally.  At the end of the run, I then teardown the test database.
 
 Since CouchDB database creation / destruction is so cheap, this allows for quite fast integration tests -- even including necessary design documents.
 
