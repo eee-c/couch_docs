@@ -55,7 +55,8 @@ module CouchDocs
     def self.delete(path)
       # retrieve existing to obtain the revision
       old = self.get(path)
-      RestClient.delete(path + "?rev=#{old['_rev']}")
+      url = old['_rev'] ? path + "?rev=#{old['_rev']}" : path
+      RestClient.delete(url)
     end
 
     def self.get(path)

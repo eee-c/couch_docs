@@ -81,6 +81,16 @@ describe CouchDocs::Store do
       CouchDocs::Store.delete("uri")
     end
 
+    it "deletes without revision if none is present (e.g. database delete)" do
+      CouchDocs::Store.stub!(:get).and_return({ })
+
+      RestClient.
+        should_receive(:delete).
+        with("uri")
+
+      CouchDocs::Store.delete("uri")
+    end
+
     it "should be able to load each document" do
       CouchDocs::Store.stub!(:get).
         with("uri/_all_docs").
