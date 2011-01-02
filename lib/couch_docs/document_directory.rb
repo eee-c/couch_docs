@@ -36,7 +36,7 @@ module CouchDocs
     end
 
     def file_as_attachment(file)
-      type = mime_type(File.extname(file))
+      type = mime_type(file)
       data = File.read(file)
 
       attachment =  {
@@ -69,12 +69,9 @@ module CouchDocs
     end
 
     private
-    def mime_type(extension)
-      ({
-         ".gif" => "image/gif",
-         ".jpg" => "image/jpeg",
-         ".png" => "image/png"
-       })[extension]
+    def mime_type(file)
+      type = MIME::Types.type_for(file).first.to_s
+      (type && type != '') ? type : nil
     end
   end
 end

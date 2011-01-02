@@ -24,4 +24,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency(%q<rest-client>, ["~> 1.6.0"])
   s.add_runtime_dependency(%q<json>, ["~> 1.4.0"])
   s.add_runtime_dependency(%q<directory_watcher>, ["~> 1.3.0"])
+  s.add_runtime_dependency(%q<mime-types>, ["~> 1.16"])
 end
