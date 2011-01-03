@@ -147,6 +147,15 @@ module CouchDocs
                              update.path)
         end
       end
+    rescue RestClient::ResourceNotFound => e
+      $stderr.puts "\n"
+      $stderr.puts e.message
+      $stderr.puts "Does the database exist? Try using the -R option."
+      $stderr.puts "\n"
+    rescue Exception => e
+      $stderr.puts "\n"
+      $stderr.puts e.message
+      $stderr.puts e.backtrace
     end
 
     def initial_add?(args)
