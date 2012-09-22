@@ -56,7 +56,14 @@ module CouchDocs
     end
 
     def read_json_value(filename)
-      JSON.parse(File.new(filename).read)
+      filedata = File.new(filename).read
+      if filedata == "false"
+        false
+      elsif filedata == "true"
+        true
+      else
+        JSON.parse(filedata)
+      end
     end
 
     def read_js_value(filename)
