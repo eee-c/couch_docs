@@ -1,4 +1,4 @@
-require File.join(File.dirname(__FILE__), %w[spec_helper])
+require 'spec_helper'
 
 describe CouchDocs do
   it "should be able to create (or delete/create) a DB" do
